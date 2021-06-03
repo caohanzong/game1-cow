@@ -1,0 +1,31 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "runclip",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 3,
+  "sample": 60,
+  "speed": 0.8,
+  "wrapMode": 2,
+  "curveData": {
+    "props": {
+      "x": [
+        {
+          "frame": 0,
+          "value": 540.857
+        },
+        {
+          "frame": 3,
+          "value": -512.576
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "frame": 3,
+      "func": "runCallback",
+      "params": []
+    }
+  ]
+}
