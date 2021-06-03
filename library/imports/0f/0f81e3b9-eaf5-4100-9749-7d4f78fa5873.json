@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "再来一次",
+    "texture": "2de424dd-693a-4362-9e65-354c91ec0963",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      392,
+      107
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      392,
+      107
+    ],
+    "capInsets": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}
