@@ -67,7 +67,96 @@ cc.Class({
         resultNode.active = true;
         cc.director.pause();
       }
-    }, 1);
+    }, 1); //创建一个用户授权按钮
+
+    var sysInfo = wx.getSystemInfoSync(); //获取微信界面大小
+
+    var screenWidth = sysInfo.screenWidth;
+    var screenHeight = sysInfo.screenHeight; // 创建一个用户授权按钮
+
+    var wxLoginBtn = wx.createUserInfoButton({
+      type: "text",
+      text: "",
+      style: {
+        left: 0,
+        top: 0,
+        width: screenWidth,
+        height: screenHeight,
+        lineHeight: 40,
+        backgroundColor: '#00000000',
+        color: '#ffffff'
+        /*textAlign:'center',
+        fontSize:16,
+        borderRadius:4*/
+
+      }
+    });
+    var self = this;
+    wxLoginBtn.onTap(function (res) {
+      console.log(res.userInfo); //拿到微信用户信息
+
+      var userInfo = res.userInfo;
+      self.wxLogin(userInfo);
+      wxLoginBtn.destroy();
+      /*
+      let icon=cc.find("Canvas/bg-Sprite/icon").getComponent(cc.Sprite);
+      //加载远程网络图片
+      cc.loader.load({url:userInfo.axatarUrl,type:"png"},function (err,texture){
+          icon.spriteFrame=new cc.SpriteFrame(texture);
+      })*/
+    });
+    wx.getUserInfo({
+      success: function success(res) {
+        var userInfo = res.userInfo;
+        self.wxLogin(userInfo);
+      },
+      fail: function fail() {
+        console.log("获取失败");
+      }
+    });
+  },
+  wxLogin: function wxLogin(userInfo) {
+    var icon = cc.find("Canvas/bg-Sprite/icon").getComponent(cc.Sprite); // 加载远程网络图片
+
+    cc.loader.load({
+      url: userInfo.avatarUrl,
+      type: "png"
+    }, function (err, texture) {
+      icon.spriteFrame = new cc.SpriteFrame(texture);
+    });
+    wx.login({
+      success: function success(res) {
+        if (res.code) {
+          // 发起网络请求给游戏后台
+          httpUtils.request({
+            url: "http://localhost:8080/login",
+            method: "POST",
+            data: {
+              code: res.code,
+              nickName: userInfo.nickName,
+              avatarUrl: userInfo.avatarUrl
+            },
+            success: function success(msg) {
+              console.log(msg);
+            }
+          });
+          /*    wx.request({
+                  url:"http://localhost:8080/login",
+                  method: "POST",
+                  header:{
+                      'content-type':'application/x-www-form-urlencoded'
+                  },
+                  data:{
+                      code:res.code,
+                      nickName:userInfo.nickName,
+                      avatarUrl:userInfo.avatarUrl
+                  }
+              })*/
+        } else {
+          console.log("登录失败" + res.errMsg);
+        }
+      }
+    });
   },
   // update (dt) {},
   //点击事件捕捉函数
@@ -124,6 +213,24 @@ cc.Class({
     cc.director.resume(); //删除逻辑
 
     cc.director.loadScene("game"); //重新加载
+  },
+  recomeBtn: function recomeBtn() {
+    cc.log("继续游戏");
+    cc.director.resume();
+    cc.director.loadScene("game");
+  },
+  //微信分享
+  shareBtn: function shareBtn() {
+    wx.shareAppMessage({
+      title: "大家都来玩套牛小游戏",
+      imageUrl: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg3.redocn.com%2F20091201%2F20091201_36a55ccc6625c6ee296buiktEBtACmVW.jpg&refer=http%3A%2F%2Fimg3.redocn.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1625222968&t=b683e51e94e88873f13821202827ac80",
+      success: function success(res) {
+        console.log(res);
+      },
+      fail: function fail(res) {
+        console.log(res);
+      }
+    });
   }
 });
 
